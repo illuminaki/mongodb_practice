@@ -1,6 +1,8 @@
+version: '3.8'
+
 services:
-  mongo:
-    image: mongo:6
+  mongodb:
+    image: mongo:latest
     container_name: mongodb_container
     restart: always
     ports:
@@ -9,18 +11,18 @@ services:
       MONGO_INITDB_ROOT_USERNAME: root
       MONGO_INITDB_ROOT_PASSWORD: example
     volumes:
-      - mongo_data:/data/db
+      - mongodb_data:/data/db
 
-  app:
+  nodeapp:
     build: .
-    container_name: node_app
+    container_name: nodeapp_container
     restart: always
     ports:
       - "3000:3000"
     depends_on:
-      - mongo
+      - mongodb
     environment:
-      MONGO_URI: "mongodb://root:example@mongo:27017/"
+      MONGO_URI: "mongodb://root:example@mongodb:27017/mydatabase?authSource=admin"
 
 volumes:
-  mongo_data:
+  mongodb_data:

@@ -1,0 +1,34 @@
+<%- include('layout') %>
+
+<div class="container">
+  <h1 class="mt-4">Lista de Usuarios</h1>
+  <a href="/users/new" class="btn btn-primary mb-3">Agregar Usuario</a>
+  <table class="table">
+    <thead>
+      <tr>
+        <th>ID</th>
+        <th>Nombre</th>
+        <th>Email</th>
+        <th>Edad</th>
+        <th>Acciones</th>
+      </tr>
+    </thead>
+    <tbody>
+      <% users.forEach(user => { %>
+        <tr>
+          <td><%= user._id %></td>
+          <td><%= user.name %></td>
+          <td><%= user.email %></td>
+          <td><%= user.age %></td>
+          <td>
+            <a href="/users/<%= user._id %>" class="btn btn-info btn-sm">Ver</a>
+            <a href="/users/edit/<%= user._id %>" class="btn btn-warning btn-sm">Editar</a>
+            <form action="/users/delete/<%= user._id %>" method="POST" style="display:inline;">
+              <button type="submit" class="btn btn-danger btn-sm">Eliminar</button>
+            </form>
+          </td>
+        </tr>
+      <% }) %>
+    </tbody>
+  </table>
+</div>

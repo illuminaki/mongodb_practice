@@ -1,0 +1,33 @@
+# Node.js
+node_modules/
+npm-debug.log*
+yarn-error.log
+.env
+.env.local
+.env.*.local
+
+# Logs
+logs
+*.log
+logs/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+debug.log*
+
+# Directorios del sistema
+.DS_Store
+Thumbs.db
+
+# Docker
+.dockerignore
+
+# Archivos generados por el editor
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Build / Coverage
+dist/
+coverage/

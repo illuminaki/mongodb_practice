@@ -1,0 +1,20 @@
+<%- include('layout') %>
+
+<div class="container">
+  <h1 class="mt-4">Agregar Usuario</h1>
+  <form action="/users" method="POST">
+    <div class="mb-3">
+      <label class="form-label">Nombre:</label>
+      <input type="text" name="name" class="form-control" required>
+    </div>
+    <div class="mb-3">
+      <label class="form-label">Email:</label>
+      <input type="email" name="email" class="form-control" required>
+    </div>
+    <div class="mb-3">
+      <label class="form-label">Edad:</label>
+      <input type="number" name="age" class="form-control" required>
+    </div>
+    <button type="submit" class="btn btn-success">Guardar</button>
+  </form>
+</div>
