@@ -161,6 +161,3 @@ db.users.deleteMany({ age: { $lt: 25 } }) // Eliminar usuarios menores de 25
 
 ---
 
-## 🎉 Felicitaciones!
-Has completado el primer día de introducción a MongoDB. En el siguiente día, exploraremos **índices, agregaciones y modelos de datos avanzados**.
-
