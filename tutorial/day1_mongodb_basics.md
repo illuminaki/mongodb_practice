@@ -33,32 +33,6 @@ MongoDB es una base de datos NoSQL orientada a documentos  que se ha convertido 
 - **Consultas poderosas**: Usa un lenguaje de consultas basado en JSON.
 - **Compatibilidad con Big Data**: Integraciones con herramientas de procesamiento de datos masivos.
 
----
-
-## 🔹 Instalación y Configuración (Docker)
-Para facilitar la instalación, usaremos **Docker** para ejecutar MongoDB sin necesidad de instalarlo manualmente.
-
-### 🔍 Verificar si MongoDB está corriendo
-Para asegurarte de que MongoDB está ejecutándose en un contenedor, usa:
-```bash
-docker ps
-```
-Esto debería mostrar un contenedor corriendo con la imagen `mongo:6`.
-
-Si no está corriendo, puedes iniciarlo con:
-```bash
-docker compose up -d
-```
-
-### 🔗 Conectarse a MongoDB desde la Terminal
-Usaremos `mongosh` para conectarnos a la base de datos con autenticación:
-```bash
-docker exec -it mongodb_container mongosh "mongodb://root:example@localhost:27017/"
-```
-Esto abrirá el shell interactivo de MongoDB con el usuario y contraseña definidos en `docker-compose.yml`.
-
----
-
 ## 🔹 Conceptos Claves en MongoDB
 ### 📂 Estructura de MongoDB
 MongoDB maneja los siguientes conceptos básicos:
@@ -86,44 +60,61 @@ MongoDB maneja los siguientes conceptos básicos:
       }
     ```
     Lo interesante es que los documentos dentro de una misma colección pueden tener diferentes campos. Por ejemplo, otro producto podría tener un campo adicional como "descuento": 10, mientras que otros productos no lo tienen.
+
 - **Campo (Field)**: Cada documento tiene campos, equivalentes a columnas en SQL.
     Los campos  son las propiedades o atributos que componen un documento. Son equivalentes a las columnas  en una tabla de una base de datos relacional.
     Siguiendo el ejemplo anterior, los campos del documento serían: "nombre", "precio", "stock", y "categoria".
     Cada campo tiene un valor asociado, como "nombre": "Laptop".
-     
-- **Índice (Index)**: Optimizan las consultas y mejoran el rendimiento.
-    Los índices  son herramientas que MongoDB utiliza para acelerar las consultas. Imagina que tienes miles de productos en tu colección productos y quieres buscar rápidamente un producto por su nombre. Sin un índice, MongoDB tendría que revisar cada documento uno por uno, lo que sería muy lento.
-    Al crear un índice  en el campo "nombre", MongoDB puede encontrar rápidamente los documentos que coinciden con ese nombre, mejorando el rendimiento de las consultas.
-    Puedes crear índices en uno o varios campos, dependiendo de tus necesidades.
-     
-- **Replica Set**: Mecanismo de alta disponibilidad mediante la replicación de datos.
-    La replicación  es un mecanismo que MongoDB utiliza para garantizar que los datos estén disponibles incluso si un servidor falla.
-    Un Replica Set  es un grupo de servidores MongoDB que mantienen copias idénticas de los datos. Uno de estos servidores actúa como el primario  (principal) y los demás como secundarios .
-    Si el servidor primario falla, uno de los secundarios automáticamente toma su lugar y sigue sirviendo las solicitudes, asegurando que la aplicación no se detenga.
-    Esto es especialmente útil para aplicaciones críticas que necesitan alta disponibilidad y tolerancia a fallos.
-     
-- **Sharding**: Estrategia para distribuir datos en múltiples servidores y mejorar la escalabilidad.
 
-    Sharding  es una técnica que MongoDB utiliza para manejar grandes volúmenes de datos distribuyéndolos entre múltiples servidores.
-    Imagina que tienes una colección con millones de documentos y un solo servidor no puede manejar toda esa carga. Con sharding , MongoDB divide la colección en partes más pequeñas llamadas fragmentos  y los distribuye entre diferentes servidores.
-    Esto permite que MongoDB maneje grandes cantidades de datos y tráfico sin problemas, ya que los servidores trabajan juntos para procesar las consultas.
-    Sharding es ideal para aplicaciones que crecen rápidamente y necesitan escalabilidad horizontal (añadir más servidores en lugar de mejorar el hardware existente).
-     
 
 ---
 
+## 🔹 Instalación y Configuración (Docker)
+Para este tutorial, asumimos que ya tienes Docker y Docker Compose instalados. Si aún no lo has hecho, consulta la documentación oficial de instalación de Docker y Docker Compose.
+
+### 🔍 Verificar si MongoDB está corriendo
+Para asegurarte de que MongoDB está ejecutándose en un contenedor, usa:
+```bash
+docker ps
+```
+Esto debería mostrar un contenedor corriendo con la imagen `mongo`.
+
+```bash
+CONTAINER ID   IMAGE                      COMMAND                  STATUS          PORTS                                             NAMES
+a716b15a2f85   mongodb_practice-nodeapp   "docker-entrypoint.s…"   Up 17 minutes   0.0.0.0:3000->3000/tcp, [::]:3000->3000/tcp       nodeapp_container
+6297076dbc49   mongo:latest               "docker-entrypoint.s…"   Up 17 minutes   0.0.0.0:27017->27017/tcp, [::]:27017->27017/tcp   mongodb_container
+```
+
+Si no está corriendo, puedes iniciarlo con:
+```bash
+docker compose up
+```
+
+### 🔗 Conectarse a MongoDB desde la Terminal
+Usaremos `mongosh` para conectarnos a la base de datos con autenticación:
+```bash
+docker exec -it mongodb_container mongosh "mongodb://root:example@localhost:27017/"
+```
+Esto abrirá el shell interactivo de MongoDB con el usuario y contraseña definidos en `docker-compose.yml`.
+
 ## 🔹 Comandos Básicos en MongoDB
 
+Accede a la shell de MongoDB: Ya estás dentro de mongosh (con el paso que hicimos anteriormente), así que no necesitas volver a conectarte.
+```bash
+ show dbs
+```
 ### 📁 Crear una Base de Datos
-```javascript
+```bash
 use my_database
 ```
 Si la base de datos no existe, MongoDB la creará cuando insertes datos.
 
 ### 📄 Crear una Colección e Insertar Datos
-```javascript
+```bash
 db.createCollection("users")
+```
 
+```bash
 db.users.insertOne({
   name: "John Doe",
   age: 30,
@@ -132,21 +123,24 @@ db.users.insertOne({
 ```
 
 ### 🔄 Insertar Varios Documentos
-```javascript
+```bash
 db.users.insertMany([
   { name: "Alice", age: 25, email: "alice@example.com" },
   { name: "Bob", age: 28, email: "bob@example.com" }
 ])
 ```
 
-### 🔎 Consultar Datos
-```javascript
+### 🔎 Consultar Datos1permite buscar todos los campos de la collection users
+```bash
 db.users.find()
+```
+
+```bash
 db.users.find({ age: { $gt: 25 } }) // Filtrar por edad mayor a 25
 ```
 
 ### ✅ Actualizar Documentos
-```javascript
+```bash
 db.users.updateOne(
   { name: "John Doe" },
   { $set: { age: 31 } }
@@ -154,10 +148,105 @@ db.users.updateOne(
 ```
 
 ### ❌ Eliminar Documentos
-```javascript
+```bash
 db.users.deleteOne({ name: "John Doe" })
 db.users.deleteMany({ age: { $lt: 25 } }) // Eliminar usuarios menores de 25
 ```
 
 ---
 
+## 🛠 Ejercicio práctico: Crea tu primera colección
+
+Vamos a crear una colección para una aplicación sencilla de "Lista de tareas". Intenta hacer con los conocimientos adquiridos el desarrollo de los siguiente retos y solo mira la solución cuando termines por tu cuenta.
+
+1. **Conéctate a MongoDB** Antes de empezar a trabajar con MongoDB, necesitas acceder a la consola interactiva de mongosh dentro de tu contenedor Docker:
+
+   <details>
+   <summary>Ver solución</summary>
+
+   ```bash
+    docker exec -it mongodb_container mongosh "mongodb://root:example@localhost:27017/"
+   ```
+</details>
+
+2. **Crea una base de datos llamada task_app**: 
+
+    Usa el comando use para seleccionar o crear una nueva base de datos llamada task_app. Este será el espacio donde almacenaremos nuestra colección de tareas. Nota que en MongoDB, la base de datos no aparecerá en show dbs hasta que insertes datos en ella.
+
+   <details>
+   <summary>Ver solución</summary>
+
+   ```bash
+    use task_app
+   ```
+</details>
+
+3. **Inserta tareas en una colección llamada tasks**:
+
+    Crea una colección llamada tasks e inserta tres documentos que representen tareas. Cada tarea debe tener los campos title (título de la tarea), completed (estado de completitud como booleano) y priority (prioridad como texto: "alta", "media" o "baja"). Usa insertMany para agregarlas todas de una vez. Por ejemplo, incluye tareas como "Aprender MongoDB", "Hacer ejercicio" y "Leer un libro" con valores variados.
+
+   <details>
+   <summary>Ver solución</summary>
+
+    ```bash
+    db.tasks.insertMany([
+    { title: "Aprender MongoDB", completed: false, priority: "alta" },
+    { title: "Hacer ejercicio", completed: true, priority: "media" },
+    { title: "Leer un libro", completed: false, priority: "baja" }
+    ])
+    ```
+</details>
+
+4. **Consulta las tareas:**:
+
+    Realiza dos consultas sobre la colección tasks:
+    Primero, muestra todos los documentos de la colección para verificar que las tareas se insertaron correctamente.
+    Luego, filtra las tareas para encontrar solo las que no están completadas (completed: false). Usa el comando find en ambos casos.
+
+   <details>
+   <summary>Ver solución</summary>
+
+    Muestra todas las tareas:
+    ```bash
+    db.tasks.find()
+    ```
+    Encuentra tareas no completadas:
+    ```bash
+    db.tasks.find({ completed: false })
+    ```
+</details>
+
+5. **Actualiza una tarea: Marca "Aprender MongoDB" como completada:**:
+
+    Modifica el documento de la tarea con el título "Aprender MongoDB" para cambiar su estado completed a true. Usa updateOne con un filtro por el campo title y el operador $set para actualizar solo el campo deseado.
+    
+   <details>
+   <summary>Ver solución</summary>
+
+    ```bash
+    db.tasks.updateOne({ title: "Aprender MongoDB" }, { $set: { completed: true } })
+    ```
+</details>
+
+6. **Elimina una tarea: Borra "Hacer ejercicio":**:
+
+    Elimina el documento correspondiente a la tarea "Hacer ejercicio" de la colección tasks. Usa deleteOne con un filtro que identifique esa tarea por su título.
+
+   <details>
+   <summary>Ver solución</summary>
+
+    ```bash
+    db.tasks.deleteOne({ title: "Hacer ejercicio" })
+    ```
+</details>
+
+
+    Resultado esperado: Al final, ejecuta db.tasks.find() y deberías ver solo 2 tareas en la colección: "Aprender MongoDB" (con completed: true) y "Leer un libro" (con completed: false). Esto confirma que insertaste, actualizaste y eliminaste datos correctamente.
+
+## 🎯 Práctica realizada
+En esta sesión, creaste la colección **tasks**, insertaste tareas, realizaste consultas, actualizaste y eliminaste datos, aplicando las operaciones CRUD básicas.
+
+
+---
+🔗 Próximo paso: Día 2 - MongoDB
+Sigue al primer paso [Ver el tutorial de MongoDB - Día 2](/tutorial/day2_mongoose_crud.md)

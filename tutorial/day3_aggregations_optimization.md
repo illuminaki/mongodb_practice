@@ -1,3 +1,115 @@
+# 📌 Día 3: Consultas Avanzadas, Índices y Visualización con Mongo Express
+
+En este segundo día, profundizaremos en cómo trabajar con MongoDB de manera más avanzada. Aprenderás a realizar consultas complejas, optimizar el rendimiento con índices y visualizar tus datos usando **Mongo Express**, una interfaz gráfica que ya está configurada en nuestro entorno Docker. ¡Vamos a ello!
+
+---
+
+## 🔹 Consultas avanzadas
+Ahora que sabes cómo insertar y buscar datos básicos (Día 1), vamos a explorar consultas más poderosas para filtrar y organizar información.
+
+### 🔍 Operadores de comparación y lógicos
+MongoDB proporciona una variedad de operadores para realizar consultas más específicas y eficientes. Entre los más importantes están:
+
+- **Operadores de comparación:** Permiten comparar valores dentro de los documentos.
+  - `$eq`: Igual a un valor específico.
+  - `$ne`: No igual a un valor específico.
+  - `$lt`: Menor que un valor específico.
+  - `$lte`: Menor o igual que un valor específico.
+  - `$gt`: Mayor que un valor específico.
+  - `$gte`: Mayor o igual que un valor específico.
+  
+  **Ejemplo:** Encontrar tareas que no son de baja prioridad.
+  ```js
+  db.tasks.find({ priority: { $ne: "baja" } })
+  ```
+  
+- **Operadores lógicos:** Permiten combinar condiciones para obtener resultados más refinados.
+  - `$or`: Devuelve documentos que coinciden con al menos una condición.
+  - `$and`: Devuelve documentos que cumplen todas las condiciones.
+  - `$not`: Niega una condición específica.
+
+  **Ejemplo:** Buscar tareas no completadas de alta prioridad.
+  ```js
+  db.tasks.find({ $and: [{ completed: false }, { priority: "alta" }] })
+  ```
+
+### 🔄 Ordenamiento y paginación
+- **Ordenar resultados:** Usa `.sort()` para ordenar los resultados de una consulta.
+  ```js
+  db.tasks.find().sort({ priority: 1 }) // Ordena por prioridad ascendente
+  ```
+
+- **Limitar y omitir resultados:**
+  - `.limit(n)`: Muestra solo `n` documentos.
+  - `.skip(n)`: Omite los primeros `n` documentos.
+  
+  **Ejemplo:** Obtener las primeras 5 tareas de prioridad alta, omitiendo las 3 primeras.
+  ```js
+  db.tasks.find({ priority: "alta" }).sort({ createdAt: -1 }).skip(3).limit(5)
+  ```
+
+---
+
+## 📌 Índices en MongoDB
+Los índices mejoran la velocidad de las consultas al permitir que MongoDB busque datos de manera más eficiente. 
+
+### 🔹 Tipos de índices
+1. **Índice único**: Se usa para evitar valores duplicados en un campo.
+   ```js
+   db.users.createIndex({ email: 1 }, { unique: true })
+   ```
+
+2. **Índice compuesto**: Abarca múltiples campos para optimizar consultas complejas.
+   ```js
+   db.tasks.createIndex({ priority: 1, dueDate: -1 })
+   ```
+
+3. **Índice de texto**: Permite realizar búsquedas eficientes en texto.
+   ```js
+   db.articles.createIndex({ content: "text" })
+   ```
+
+### 🔍 Ver y eliminar índices
+- **Listar índices existentes:**
+  ```js
+  db.tasks.getIndexes()
+  ```
+- **Eliminar un índice:**
+  ```js
+  db.tasks.dropIndex("priority_1_dueDate_-1")
+  ```
+
+---
+
+## 🖥️ Visualización con Mongo Express
+Mongo Express proporciona una interfaz web para interactuar con MongoDB de manera visual.
+
+### 📌 Características clave de Mongo Express
+- Explorar bases de datos y colecciones fácilmente.
+- Insertar, actualizar y eliminar documentos.
+- Ejecutar consultas y visualizar resultados sin necesidad de la CLI de MongoDB.
+
+### 📌 Acceder a Mongo Express
+Para acceder a la interfaz web, simplemente abre tu navegador y dirígete a:
+```
+http://localhost:8081
+```
+Aquí podrás ver todas tus bases de datos y realizar operaciones CRUD sin necesidad de comandos.
+
+---
+
+### ✅ Resumen del día 2
+✅ Consultas avanzadas con operadores de comparación y lógicos.
+✅ Ordenamiento y paginación de resultados.
+✅ Creación y gestión de índices para mejorar el rendimiento.
+✅ Uso de Mongo Express para una gestión visual de la base de datos.
+
+¡Felicidades! Ahora tienes una mejor comprensión de cómo consultar y optimizar tu base de datos en MongoDB. 🚀
+
+
+
+************************************************************************************************
+
 # 📌 Día 3: Aggregations y Optimización en MongoDB
 
 ## 🔹 ¿Qué son las Aggregations en MongoDB?

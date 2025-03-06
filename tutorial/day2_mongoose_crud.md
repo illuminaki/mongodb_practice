@@ -1,161 +1,123 @@
-# 📌 Día 2: CRUD con Mongoose en MongoDB
+# 📌 Día 2: Poblar, Clonar y Ofuscar Bases de Datos en MongoDB
 
-## 🔹 ¿Qué es Mongoose?
-Mongoose es una biblioteca de modelado de datos para MongoDB y Node.js. Facilita la interacción con MongoDB proporcionando una capa de abstracción sobre la API nativa, permitiendo trabajar con esquemas, validaciones y modelos de datos de manera estructurada y eficiente. Es ampliamente utilizada en aplicaciones Node.js que requieren persistencia de datos en una base MongoDB.
-
-🔍 Ventajas de usar Mongoose
-
-✅ Permite definir esquemas que estructuran los documentos en MongoDB.
-
-✅ Incluye validaciones integradas para garantizar la integridad de los datos.
-
-✅ Facilita la creación de modelos para representar colecciones en la base de datos.
-
-✅ Proporciona una API con métodos avanzados para consultas y manipulación de datos.
-
-✅ Soporta middleware para ejecutar lógica antes o después de ciertas operaciones.
-
-✅ Permite definir métodos personalizados en los modelos para extender su funcionalidad.
-
-
-
-### ✨ Características principales de Mongoose
-- Definición de **esquemas** Mongoose permite definir esquemas que describen la estructura de los documentos que se almacenarán en MongoDB. Un esquema es una plantilla que define los campos, tipos de datos, valores predeterminados, validaciones y más.
-
-``` 
-    const mongoose = require('mongoose');
-    const Schema = mongoose.Schema;
-
-    const userSchema = new Schema({
-    name: { type: String, required: true },
-    age: { type: Number, min: 18 },
-    email: { type: String, unique: true, required: true }
-    });
-```
-
-- **Modelado de datos** Un modelo es una clase que representa una colección en MongoDB. Se crea a partir de un esquema y proporciona métodos para realizar operaciones CRUD (Crear, Leer, Actualizar, Eliminar).
-
-```
-    const User = mongoose.model('User', userSchema);
-```
-
-- **Validaciones integradas** Mongoose incluye validaciones automáticas basadas en los esquemas. Por ejemplo, si un campo es requerido o debe ser único, Mongoose se encarga de validar estos requisitos antes de guardar los datos en la base de datos.
-
-```
-    const newUser = new User({ name: 'John', age: 17 });
-        newUser.save((err) => {
-        if (err) console.log(err); // Error: "age" debe ser mayor o igual a 18
-    });
-```
-
-- **Métodos avanzados para consultas** Mongoose proporciona métodos como find, findOne, update, delete, entre otros, para realizar consultas y manipular datos de manera eficiente.
-
-```
-    User.find({ age: { $gte: 18 } }, (err, users) => {
-    if (err) console.log(err);
-    else console.log(users); // Lista de usuarios mayores de 18 años
-    });
-```
-
-- **Middleware y hooks** Mongoose permite definir funciones de middleware (también conocidas como hooks) que se ejecutan antes o después de ciertas acciones, como guardar un documento o eliminarlo.
-
-```
-    userSchema.pre('save', function(next) {
-        console.log('Guardando usuario...');
-        next();
-    });
-```
-
-- **Integración con MongoDB** Mongoose se conecta a MongoDB utilizando la API nativa del driver de MongoDB, pero simplifica su uso al proporcionar una interfaz más intuitiva y orientada a objetos.
-
-
-
+## 🎯 Objetivo General
+En este Día 2, aprenderás a poblar bases de datos con datos masivos (seeds), clonar bases existentes con `mongodump` y `mongorestore`, y ofuscar datos sensibles para trabajar localmente. Esto te preparará para optimizar bases grandes con índices y visualizarlas en el Día 3 con **Mongo Express**.
 
 ---
 
-## 🔹 Instalación y Configuración de Mongoose
-Antes de comenzar, debemos instalar Mongoose en nuestro proyecto:
+## 🔹 1. Poblar Bases de Datos con Seeds
+### 📖 Teoría:
+- **¿Qué son los seeds?** Son datos iniciales generados para pruebas o desarrollo, similares a los "seeds" en Rails.
+- En MongoDB, no hay un comando nativo para seeds, pero podemos usar scripts o herramientas como `faker-js` en Node.js para generarlos.
+
+### 🛠 Práctica con `faker-js`:
+Usaremos un script en Node.js para generar datos masivos.
+
+#### 📌 Instalación de `faker-js`:
 ```bash
-npm install mongoose
+npm install @faker-js/faker
 ```
-Luego, creamos una conexión a MongoDB utilizando nuestro archivo `mongoose_connection.js`:
 
+#### 📌 Ejemplo de script (`seed.js`) para poblar la colección `users` con 1000 documentos:
 ```javascript
-const mongoose = require('mongoose');
-require('dotenv').config();
+const { MongoClient } = require('mongodb');
+const { faker } = require('@faker-js/faker');
 
-const connectDB = async () => {
+async function seedDB() {
+  const uri = "mongodb://root:example@localhost:27017/mydatabase?authSource=admin";
+  const client = new MongoClient(uri);
+
   try {
-    await mongoose.connect(process.env.MONGO_URI, {
-      useNewUrlParser: true,
-      useUnifiedTopology: true,
-    });
-    console.log('🔥 MongoDB Connected Successfully');
-  } catch (err) {
-    console.error('❌ MongoDB Connection Error:', err);
-    process.exit(1);
+    await client.connect();
+    const db = client.db('mydatabase');
+    const collection = db.collection('users');
+
+    // Generar 1000 usuarios falsos
+    const users = Array.from({ length: 1000 }, () => ({
+      name: faker.person.fullName(),
+      email: faker.internet.email(),
+      age: faker.number.int({ min: 18, max: 80 }),
+      createdAt: faker.date.past(),
+      address: {
+        street: faker.location.streetAddress(),
+        city: faker.location.city(),
+        country: faker.location.country()
+      }
+    }));
+
+    await collection.insertMany(users);
+    console.log("¡Base de datos poblada con éxito!");
+  } catch (error) {
+    console.error("Error al poblar la base de datos:", error);
+  } finally {
+    await client.close();
   }
-};
+}
 
-module.exports = connectDB;
-```
-
-Para utilizar la conexión en nuestro servidor:
-```javascript
-const connectDB = require('./mongoose_connection');
-connectDB();
+seedDB();
 ```
 
 ---
 
-## 🔹 Definiendo un Esquema y Modelo en Mongoose
-En Mongoose, los **esquemas** definen la estructura de los documentos dentro de una colección. Un **modelo** es una instancia de un esquema que permite interactuar con MongoDB.
+## 🔹 2. Clonar Bases de Datos con `mongodump` y `mongorestore`
+### 📖 Teoría:
+- `mongodump`: Comando que extrae una copia de una base de datos en formato BSON.
+- `mongorestore`: Restaura una base de datos desde un backup creado con `mongodump`.
 
-Ejemplo de un esquema para usuarios:
-```javascript
-const mongoose = require('mongoose');
+### 🛠 Práctica:
+#### 📌 **Crear un backup** de la base de datos `mydatabase`:
+```bash
+mongodump --host localhost --port 27017 -u root -p example --authenticationDatabase admin --db mydatabase --out backup/
+```
 
-const userSchema = new mongoose.Schema({
-  name: { type: String, required: true },
-  email: { type: String, required: true, unique: true },
-  age: { type: Number, min: 0 }
-});
-
-const User = mongoose.model('User', userSchema);
-
-module.exports = User;
+#### 📌 **Restaurar el backup** en una nueva base de datos `mydatabase_clone`:
+```bash
+mongorestore --host localhost --port 27017 -u root -p example --authenticationDatabase admin --db mydatabase_clone backup/mydatabase/
 ```
 
 ---
 
-## 🔹 Operaciones CRUD con Mongoose
-### 📌 Crear un Documento (Create)
-```javascript
-const newUser = new User({ name: 'John Doe', email: 'john@example.com', age: 30 });
-await newUser.save();
-console.log('Usuario guardado:', newUser);
-```
+## 🔹 3. Ofuscación de Datos Sensibles
+### 📖 Teoría:
+- La ofuscación es el proceso de modificar datos sensibles para proteger la privacidad de los usuarios.
+- Se usa en entornos de desarrollo o pruebas para evitar exponer información real.
 
-### 📌 Leer Documentos (Read)
+### 🛠 Práctica con `updateMany()`:
+Podemos ofuscar correos electrónicos y nombres en la base de datos:
 ```javascript
-const users = await User.find();
-console.log('Usuarios:', users);
-```
+const { MongoClient } = require('mongodb');
+const { faker } = require('@faker-js/faker');
 
-### 📌 Actualizar un Documento (Update)
-```javascript
-await User.updateOne({ email: 'john@example.com' }, { age: 31 });
-console.log('Usuario actualizado');
-```
+async function obfuscateData() {
+  const uri = "mongodb://root:example@localhost:27017/mydatabase?authSource=admin";
+  const client = new MongoClient(uri);
 
-### 📌 Eliminar un Documento (Delete)
-```javascript
-await User.deleteOne({ email: 'john@example.com' });
-console.log('Usuario eliminado');
+  try {
+    await client.connect();
+    const db = client.db('mydatabase');
+    const collection = db.collection('users');
+
+    // Ofuscar datos
+    const users = await collection.find().toArray();
+    for (const user of users) {
+      await collection.updateOne(
+        { _id: user._id },
+        { $set: { name: faker.person.fullName(), email: faker.internet.email() } }
+      );
+    }
+    console.log("¡Datos ofuscados con éxito!");
+  } catch (error) {
+    console.error("Error al ofuscar los datos:", error);
+  } finally {
+    await client.close();
+  }
+}
+
+obfuscateData();
 ```
 
 ---
 
-## 🔹 Conclusión
-Mongoose facilita la interacción con MongoDB al proporcionar un sistema de modelado estructurado. En los próximos días, exploraremos validaciones avanzadas, relaciones entre modelos y optimización de consultas.
+## ✅ Conclusión
+Hoy aprendimos a poblar bases de datos con `faker-js`, a clonar bases con `mongodump` y `mongorestore`, y a proteger datos sensibles con ofuscación. ¡En el Día 3 veremos cómo optimizar estas bases con índices y visualizarlas en **Mongo Express**!
 

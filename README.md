@@ -1,48 +1,63 @@
-# MongoDB con Mongoose - Guía Práctica
+# MongoDB Practice
 
-Este repositorio está diseñado para aprender desde cero a trabajar con MongoDB usando Mongoose en Node.js.
-Incluye ejemplos prácticos de CRUD, agregaciones, índices y optimización de consultas.
+Bienvenido al repositorio **MongoDB Practice**, un proyecto diseñado para enseñar los fundamentos y mejores prácticas de MongoDB a través de ejemplos prácticos. Este proyecto está completamente dockerizado, lo que facilita su ejecución sin necesidad de instalar dependencias adicionales más allá de Docker y Docker Compose.
 
-## 📌 Requisitos Previos
-- Tener instalado [Node.js](https://nodejs.org/)
-- Tener instalado [MongoDB](https://www.mongodb.com/try/download/community)
-- Conocimientos básicos de JavaScript y Node.js
+## Requisitos previos
+Para ejecutar este proyecto, solo necesitas tener instalados:
 
-## 📂 Estructura del Repositorio
+- **Docker**: Sigue las instrucciones oficiales para instalar Docker en tu sistema siguiendo [esta guía](https://docs.docker.com/engine/install/ubuntu/).
+- **Docker Compose**: Instala Docker Compose según las [guías oficiales](https://docs.docker.com/compose/install/).
 
-```
-📁 mongodb-mongoose-guide
-│── 📄 README.md  # Documentación principal
-│── 📁 src        # Código fuente con ejemplos
-│   ├── models   # Modelos de Mongoose
-│   ├── routes   # Rutas para API REST
-│   ├── config   # Configuración de base de datos
-│   ├── index.js # Archivo principal de la aplicación
-│── 📁 docs      # Documentación extra
-```
+Asegúrate de que ambos estén correctamente configurados antes de continuar.
 
-## 🚀 Instalación
-Clona el repositorio y ejecuta:
+## Instalación y ejecución
+
+### 1. Clona el repositorio:
 ```bash
-git clone https://github.com/tu-usuario/mongodb-mongoose-guide.git
-cd mongodb-mongoose-guide
-npm install
+git clone https://github.com/illuminaki/mongodb_practice.git
+cd mongodb_practice
 ```
 
-## 🛠 Configuración
-1. Crea un archivo `.env` en la raíz con tu URI de MongoDB:
-```env
-MONGO_URI=mongodb://localhost:27017/tu_base_de_datos
-```
-2. Inicia el servidor:
+### 2. Ejecuta el proyecto con Docker Compose:
 ```bash
-npm start
+docker-compose up --build
+```
+Esto construirá las imágenes necesarias y levantará tanto la aplicación como la base de datos MongoDB en contenedores. La bandera `--build` asegura que las imágenes se reconstruyan si hay cambios en el `Dockerfile` o el código.
+
+### 3. Accede a la aplicación
+Una vez que los contenedores estén en ejecución, abre tu navegador y visita:
+```
+http://localhost:3000
+```
+(El puerto puede variar según lo que hayas configurado en el `docker-compose.yml`).
+
+### 4. Detener la aplicación
+Para detener los contenedores, usa:
+```bash
+docker-compose down
+```
+Si deseas eliminar también los volúmenes (como la base de datos), agrega la bandera `--volumes`:
+```bash
+docker-compose down --volumes
 ```
 
-## 📚 Contenido
-- **CRUD con Mongoose** (Crear, Leer, Actualizar, Eliminar)
-- **Agregaciones y optimización de consultas**
-- **Índices en MongoDB** y su impacto en el rendimiento
+## Estructura del proyecto
+```
+📦 mongodb_practice
+├── 📂 controllers/    # Lógica de negocio y manejo de rutas
+├── 📂 models/         # Definiciones de esquemas de MongoDB
+├── 📂 routes/         # Definición de rutas de la API
+├── 📂 config/         # Configuración de la base de datos y variables de entorno
+├── 📂 tutorial/       # Documentación teórica sobre MongoDB
+├── 📜 docker-compose.yml  # Configuración de los contenedores Docker
+├── 📜 Dockerfile      # Instrucciones para construir la imagen Docker
+├── 📜 README.md       # Documentación principal del proyecto
+```
 
-📌 **Este repositorio se actualizará con nuevos ejemplos y explicaciones.**
+Este proyecto incluye una carpeta `tutorial/` donde se encuentra documentación teórica sobre los fundamentos de MongoDB y su uso en aplicaciones prácticas.
+Sigue al primer paso [Ver el tutorial de MongoDB - Día 1](tutorial/day1_mongodb_basics.md)
+---
+
+
+
 

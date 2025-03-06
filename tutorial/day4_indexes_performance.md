@@ -4,6 +4,25 @@
 
 Los **índices** en MongoDB permiten acelerar las consultas al organizar los datos de manera eficiente, reduciendo el número de documentos que deben escanearse para recuperar la información solicitada. Sin índices, MongoDB realizaría un escaneo completo de la colección (*collection scan*), lo que impactaría negativamente en el rendimiento.
 
+- **Sharding**: Estrategia para distribuir datos en múltiples servidores y mejorar la escalabilidad.
+
+  Sharding  es una técnica que MongoDB utiliza para manejar grandes volúmenes de datos distribuyéndolos entre múltiples servidores.
+  Imagina que tienes una colección con millones de documentos y un solo servidor no puede manejar toda esa carga. Con sharding , MongoDB divide la colección en partes más pequeñas llamadas fragmentos  y los distribuye entre diferentes servidores.
+  Esto permite que MongoDB maneje grandes cantidades de datos y tráfico sin problemas, ya que los servidores trabajan juntos para procesar las consultas.
+  Sharding es ideal para aplicaciones que crecen rápidamente y necesitan escalabilidad horizontal (añadir más servidores en lugar de mejorar el hardware existente).
+    
+- **Índice (Index)**: Optimizan las consultas y mejoran el rendimiento.
+  Los índices  son herramientas que MongoDB utiliza para acelerar las consultas. Imagina que tienes miles de productos en tu colección productos y quieres buscar rápidamente un producto por su nombre. Sin un índice, MongoDB tendría que revisar cada documento uno por uno, lo que sería muy lento.
+  Al crear un índice  en el campo "nombre", MongoDB puede encontrar rápidamente los documentos que coinciden con ese nombre, mejorando el rendimiento de las consultas.
+  Puedes crear índices en uno o varios campos, dependiendo de tus necesidades.
+
+- **Replica Set**: Mecanismo de alta disponibilidad mediante la replicación de datos.
+  La replicación  es un mecanismo que MongoDB utiliza para garantizar que los datos estén disponibles incluso si un servidor falla.
+  Un Replica Set  es un grupo de servidores MongoDB que mantienen copias idénticas de los datos. Uno de estos servidores actúa como el primario  (principal) y los demás como secundarios .
+  Si el servidor primario falla, uno de los secundarios automáticamente toma su lugar y sigue sirviendo las solicitudes, asegurando que la aplicación no se detenga.
+  Esto es especialmente útil para aplicaciones críticas que necesitan alta disponibilidad y tolerancia a fallos.
+     
+
 ### 🔍 Ventajas de usar Índices
 
 ✅ Mejoran significativamente el rendimiento de las consultas.

@@ -12,6 +12,12 @@ services:
       MONGO_INITDB_ROOT_PASSWORD: example
     volumes:
       - mongodb_data:/data/db
+    healthcheck:
+      test: echo 'db.runCommand("ping").ok' | mongosh mongodb://root:example@localhost:27017/admin --quiet
+      interval: 10s
+      retries: 5
+      start_period: 10s
+      timeout: 5s
 
   nodeapp:
     build: .
@@ -20,9 +26,27 @@ services:
     ports:
       - "3000:3000"
     depends_on:
-      - mongodb
+      mongodb:
+        condition: service_healthy
     environment:
       MONGO_URI: "mongodb://root:example@mongodb:27017/mydatabase?authSource=admin"
 
+  mongo-express:
+    image: mongo-express
+    container_name: mongo_express_container
+    restart: always
+    ports:
+      - "8081:8081"
+    depends_on:
+      mongodb:
+        condition: service_healthy
+    environment:
+      ME_CONFIG_MONGODB_ADMINUSERNAME: root
+      ME_CONFIG_MONGODB_ADMINPASSWORD: example
+      ME_CONFIG_MONGODB_SERVER: mongodb
+      ME_CONFIG_BASICAUTH_USERNAME: admin
+      ME_CONFIG_BASICAUTH_PASSWORD: admin
+
 volumes:
   mongodb_data:
+
