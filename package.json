@@ -8,6 +8,7 @@
     "dev": "nodemon server.js"
   },
   "dependencies": {
+    "@faker-js/faker": "^9.5.1",
     "ejs": "^3.1.10",
     "express": "^4.21.2",
     "mongoose": "^7.0.0"

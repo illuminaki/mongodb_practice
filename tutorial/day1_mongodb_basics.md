@@ -80,9 +80,10 @@ docker ps
 Esto debería mostrar un contenedor corriendo con la imagen `mongo`.
 
 ```bash
-CONTAINER ID   IMAGE                      COMMAND                  STATUS          PORTS                                             NAMES
-a716b15a2f85   mongodb_practice-nodeapp   "docker-entrypoint.s…"   Up 17 minutes   0.0.0.0:3000->3000/tcp, [::]:3000->3000/tcp       nodeapp_container
-6297076dbc49   mongo:latest               "docker-entrypoint.s…"   Up 17 minutes   0.0.0.0:27017->27017/tcp, [::]:27017->27017/tcp   mongodb_container
+CONTAINER ID   IMAGE                      COMMAND                  CREATED          STATUS                    PORTS                                           NAMES
+2a47ba172a3c   mongo-express              "/sbin/tini -- /dock…"   23 minutes ago   Up 23 minutes             0.0.0.0:8081->8081/tcp, :::8081->8081/tcp       mongo_express_container
+bd88f5c22b69   mongodb_practice-nodeapp   "docker-entrypoint.s…"   23 minutes ago   Up 23 minutes             0.0.0.0:3000->3000/tcp, :::3000->3000/tcp       nodeapp_container
+07a665829c72   mongo:latest               "docker-entrypoint.s…"   23 minutes ago   Up 23 minutes (healthy)   0.0.0.0:27017->27017/tcp, :::27017->27017/tcp   mongodb_container
 ```
 
 Si no está corriendo, puedes iniciarlo con:
@@ -249,4 +250,4 @@ En esta sesión, creaste la colección **tasks**, insertaste tareas, realizaste 
 
 ---
 🔗 Próximo paso: Día 2 - MongoDB
-Sigue al primer paso [Ver el tutorial de MongoDB - Día 2](/tutorial/day2_mongoose_crud.md)
+Sigue al primer paso [Ver el tutorial de MongoDB - Día 2](/tutorial/day2_backup_restore_seeds.md)

@@ -2,6 +2,17 @@
 
 En este segundo día, profundizaremos en cómo trabajar con MongoDB de manera más avanzada. Aprenderás a realizar consultas complejas, optimizar el rendimiento con índices y visualizar tus datos usando **Mongo Express**, una interfaz gráfica que ya está configurada en nuestro entorno Docker. ¡Vamos a ello!
 
+
+### 📖 Usando replicación (`Replica Set`)
+MongoDB permite configurar un conjunto de réplicas (`Replica Set`) donde los datos se replican automáticamente en varios nodos. Esto no es un backup en sí, pero proporciona redundancia y alta disponibilidad.
+
+#### 📌 Pasos:
+1. Configura un `Replica Set` con al menos tres nodos (primario y secundarios).
+2. Usa `rs.initiate()` en el nodo primario para iniciar la replicación.
+3. Verifica el estado de la replicación con `rs.status()`.
+
+> **Beneficio:** Si un nodo falla, otro puede tomar su lugar automáticamente.
+
 ---
 
 ## 🔹 Consultas avanzadas
