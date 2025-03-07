@@ -250,4 +250,4 @@ En esta sesión, creaste la colección **tasks**, insertaste tareas, realizaste 
 
 ---
 🔗 Próximo paso: Día 2 - MongoDB
-Sigue al primer paso [Ver el tutorial de MongoDB - Día 2](/tutorial/day2_backup_restore_seeds.md)
+Sigue al segundo paso [Ver el tutorial de MongoDB - Día 2](/tutorial/day2_backup_restore_seeds.md)

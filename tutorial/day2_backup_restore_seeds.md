@@ -410,8 +410,4 @@ db.customers.updateMany({}, { $set: { email: "anon@example.com" } })
 
 ---
 🔗 Próximo paso: Día 3 - MongoDB
-Sigue al primer paso [Ver el tutorial de MongoDB - Día 3](/tutorial/day3_aggregations_optimization.md)
-
-
-
-
+Sigue al tercer paso [Ver el tutorial de MongoDB - Día 3](/tutorial/day3_mongo_express_advanced_queries.md)

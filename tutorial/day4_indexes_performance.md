@@ -22,6 +22,60 @@ Los **índices** en MongoDB permiten acelerar las consultas al organizar los dat
   Si el servidor primario falla, uno de los secundarios automáticamente toma su lugar y sigue sirviendo las solicitudes, asegurando que la aplicación no se detenga.
   Esto es especialmente útil para aplicaciones críticas que necesitan alta disponibilidad y tolerancia a fallos.
      
+### 📌 Paginación con `limit` y `skip`
+Para optimizar la carga de datos en grandes colecciones, usamos `limit` y `skip`.
+
+**Ejemplo:** Obtener los primeros 10 clientes, saltando los primeros 5.
+```json
+{
+  "find": "customers",
+  "limit": 10,
+  "skip": 5
+}
+```
+
+---
+
+## ⚡ Índices en MongoDB
+Los índices mejoran el rendimiento de las consultas. Sin ellos, MongoDB debe escanear toda la colección.
+
+### 📌 Crear un índice en el campo `email`
+```bash
+db.customers.createIndex({ "email": 1 })
+```
+
+### 📌 Ver índices existentes
+```bash
+db.customers.getIndexes()
+```
+
+---
+
+## 🔄 Aggregations en MongoDB
+La agregación permite realizar transformaciones y cálculos avanzados en los datos.
+
+### 📌 Contar clientes por país
+```json
+[
+  { "$group": { "_id": "$country", "total": { "$sum": 1 } } }
+]
+```
+
+### 📌 Obtener la edad promedio de los clientes
+```json
+[
+  { "$group": { "_id": null, "promedioEdad": { "$avg": "$age" } } }
+]
+```
+
+
+### 📖 Usando replicación (`Replica Set`)
+MongoDB permite configurar un conjunto de réplicas (`Replica Set`) donde los datos se replican automáticamente en varios nodos. Esto no es un backup en sí, pero proporciona redundancia y alta disponibilidad.
+
+#### 📌 Pasos:
+1. Configura un `Replica Set` con al menos tres nodos (primario y secundarios).
+2. Usa `rs.initiate()` en el nodo primario para iniciar la replicación.
+3. Verifica el estado de la replicación con `rs.status()`.
 
 ### 🔍 Ventajas de usar Índices
 
