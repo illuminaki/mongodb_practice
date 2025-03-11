@@ -153,6 +153,83 @@ db.users.updateOne(
 db.users.deleteOne({ name: "John Doe" })
 db.users.deleteMany({ age: { $lt: 25 } }) // Eliminar usuarios menores de 25
 ```
+Aquí tienes un listado de los operadores de consulta en **MongoDB**, en formato de documentación **Markdown**.
+
+---
+
+## 📌 **Operadores de Consulta en MongoDB**
+
+MongoDB ofrece una variedad de operadores que se pueden usar en consultas (`find`, `findOne`, `aggregate`, etc.).  
+
+### **📖 Comparación**
+| Operador  | Descripción | Ejemplo |
+|-----------|------------|---------|
+| `$eq`  | Igual a (`=`) | `{ age: { $eq: 30 } }` |
+| `$ne`  | Diferente de (`!=`) | `{ age: { $ne: 30 } }` |
+| `$gt`  | Mayor que (`>`) | `{ age: { $gt: 30 } }` |
+| `$gte` | Mayor o igual (`>=`) | `{ age: { $gte: 30 } }` |
+| `$lt`  | Menor que (`<`) | `{ age: { $lt: 30 } }` |
+| `$lte` | Menor o igual (`<=`) | `{ age: { $lte: 30 } }` |
+
+---
+
+### **🔍 Evaluación**
+| Operador  | Descripción | Ejemplo |
+|-----------|------------|---------|
+| `$exists` | Verifica si un campo existe | `{ email: { $exists: true } }` |
+| `$type` | Filtra por tipo de dato | `{ age: { $type: "int" } }` |
+
+---
+
+### **🔢 Operadores de Arreglo**
+| Operador  | Descripción | Ejemplo |
+|-----------|------------|---------|
+| `$in`  | Coincide con algún valor de la lista | `{ status: { $in: ["activo", "pendiente"] } }` |
+| `$nin` | No coincide con los valores de la lista | `{ status: { $nin: ["inactivo", "cancelado"] } }` |
+| `$all` | Todos los valores deben coincidir | `{ tags: { $all: ["mongodb", "database"] } }` |
+| `$size` | Filtra por tamaño del arreglo | `{ tags: { $size: 3 } }` |
+
+---
+
+### **🔁 Operadores Lógicos**
+| Operador  | Descripción | Ejemplo |
+|-----------|------------|---------|
+| `$and` | Todas las condiciones deben cumplirse | `{ $and: [ { age: { $gt: 25 } }, { city: "Medellín" } ] }` |
+| `$or` | Al menos una condición debe cumplirse | `{ $or: [ { age: { $lt: 18 } }, { age: { $gt: 65 } } ] }` |
+| `$not` | Niega una condición | `{ age: { $not: { $gt: 30 } } }` |
+| `$nor` | Ninguna condición debe cumplirse | `{ $nor: [ { age: { $lt: 18 } }, { age: { $gt: 65 } } ] }` |
+
+---
+
+### **🔄 Operadores de Elementos**
+| Operador  | Descripción | Ejemplo |
+|-----------|------------|---------|
+| `$elemMatch` | Coincidencia en un arreglo de objetos | `{ reviews: { $elemMatch: { rating: 5 } } }` |
+
+---
+
+### **🔡 Operadores de Expresiones Regulares**
+| Operador  | Descripción | Ejemplo |
+|-----------|------------|---------|
+| `$regex` | Coincidencia con una expresión regular | `{ name: { $regex: "^A", $options: "i" } }` |
+
+---
+
+### **🛠️ Operadores de Modificación de Proyección**
+| Operador  | Descripción | Ejemplo |
+|-----------|------------|---------|
+| `$slice` | Limita elementos en un arreglo | `{ comments: { $slice: 5 } }` |
+
+---
+
+### **📅 Operadores de Expresiones de Fecha**
+| Operador  | Descripción | Ejemplo |
+|-----------|------------|---------|
+| `$dateToString` | Convierte fecha a string | `{ $dateToString: { format: "%Y-%m-%d", date: "$createdAt" } }` |
+
+---
+
+Este listado incluye los operadores más utilizados en **MongoDB**, organizados por categoría para facilitar la consulta. 🚀
 
 ---
 
