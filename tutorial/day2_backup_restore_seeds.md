@@ -173,6 +173,51 @@ MongoDB almacena los datos en archivos en el sistema de archivos (por defecto en
 > **Nota:** Este método no es recomendable para bases de datos en producción porque requiere detener el servidor.
 ---
 
+## 🔹🛠 Automatizar la clonación de esquemas (opcional)
+
+Si necesitas clonar solo la estructura (esquema) de una base de datos desde otro entorno (e.g., producción) a tu máquina local sin datos, puedes automatizarlo con un script en Node.js. Esto es útil cuando trabajas con muchas colecciones y quieres replicar su estructura rápidamente.
+
+📖 Teoría:
+
+Objetivo: Copiar colecciones e índices desde una base remota a tu base local sin datos.
+
+Ventaja: Ahorra tiempo frente a comandos manuales y permite personalización (e.g., poblar luego con faker-js).
+
+📌 Script de ejemplo:  [clone_schema.js](/clone_schema.js)
+
+Crea un archivo clone_schema.js en la raíz del proyecto:
+
+
+📌 Ejecutar el script:
+
+node clone_schema.js
+
+📝 Explicación del script:
+
+Conexión: Usa MongoClient para conectar a una base remota (source_db) y tu base local (local_db).
+
+Colecciones: Lista todas las colecciones de la base fuente con listCollections().
+
+Creación: Replica cada colección con sus opciones (e.g., capped collections) en la base local.
+
+Índices: Copia todos los índices (excepto _id_) con sus propiedades (e.g., unique).
+
+Adaptación: Usa las credenciales root:example y el URI de tu entorno Docker local.
+
+📌 Personalización:
+
+Cambia remote_host por la dirección de tu servidor remoto (e.g., production.example.com).
+
+Ajusta source_db al nombre de la base remota (e.g., production_db).
+
+📌 Casos de uso:
+
+Clonar una base de producción a local para desarrollo.
+
+Preparar un entorno de prueba con la misma estructura que producción.
+
+Nota: Este script no copia datos, solo el esquema. Para poblar luego, usa populate_schema.js.
+
 ## 🔹 Ofuscación de Datos Sensibles
 Cuando trabajamos con bases de datos reales, a menudo necesitamos una copia de los datos en un entorno de desarrollo sin exponer información sensible.
 

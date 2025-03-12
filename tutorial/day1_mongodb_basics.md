@@ -229,7 +229,7 @@ MongoDB ofrece una variedad de operadores que se pueden usar en consultas (`find
 
 ---
 
-Este listado incluye los operadores más utilizados en **MongoDB**, organizados por categoría para facilitar la consulta. 🚀
+Este listado incluye los operadores más utilizados en **MongoDB**, organizados por categoría para facilitar la consulta.
 
 ---
 
