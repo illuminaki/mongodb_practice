@@ -11,40 +11,117 @@ Los **índices** son estructuras que MongoDB utiliza para acelerar las consultas
 
 **Ejemplo:** Imagina una colección `products` con millones de documentos. Buscar un producto por `name` sin índice es como buscar una palabra en un libro sin índice alfabético. Con un índice, MongoDB va directo al dato.
 
+## 📚 ¿Cómo funcionan los índices?
+MongoDB almacena los índices como una estructura separada que referencia los documentos en la colección. Cuando realizas una consulta, el motor usa el índice (si existe y es útil) para limitar los documentos que debe examinar. Por ejemplo:
+
+- **Sin índice** en `{ price: 1 }`, una consulta como `db.products.find({ price: 99.99 })` escanea toda la colección.
+- **Con índice**, MongoDB usa el **árbol B** para ir directo a los documentos con `price: 99.99`.
+
+> ✨ **Dato curioso:** El campo `_id` siempre tiene un índice único por defecto en todas las colecciones.
+
+## 📌 Ventajas de los índices
+- **Rendimiento**: Aceleran consultas de búsqueda (`find`), filtrado (`$gt`, `$lt`), y ordenamiento (`sort`).
+- **Eficiencia**: Reducen la cantidad de documentos escaneados, disminuyendo la carga del servidor.
+- **Soporte avanzado**: Habilitan operaciones como búsquedas textuales, geoespaciales y `aggregations` más rápidas.
+- **Escalabilidad**: Son clave para mantener el rendimiento en bases de datos grandes.
+
+## 📌 Consideraciones y desventajas
+- **Espacio en disco**: Cada índice ocupa memoria y almacenamiento adicional.
+- **Costo en escrituras**: Insertar, actualizar o eliminar documentos requiere actualizar los índices, lo que puede ralentizar estas operaciones.
+- **Selección estratégica**: Crear índices innecesarios desperdicia recursos. Usa `explain()` para identificar qué campos realmente necesitan índices.
+- **Límite**: Una colección puede tener hasta **64 índices**, pero rara vez necesitarás tantos.
+
+## 📚 Mejores prácticas para índices
+- **Analiza tus consultas**: Crea índices en campos usados frecuentemente en filtros, ordenamientos o joins (e.g., `$lookup`).
+- **Orden en índices compuestos**: Coloca primero los campos usados en filtros exactos (`=`) y luego los usados en ordenamiento (`sort`).
+- **Índices cubiertos (Covered Queries)**: Diseña índices que incluyan todos los campos devueltos por una consulta para evitar acceder a los documentos originales.
+
+```javascript
+db.customers.createIndex({ name: 1, age: 1 })
+db.customers.find({ name: "John Doe" }, { name: 1, age: 1, _id: 0 })
+```   
+## 📌 Ejemplo práctico: Antes y después de un índice
+Supón una colección `users` con 1 millón de documentos. **Sin índice**:
+
+```javascript
+db.users.find({ age: 30 })
+```
+MongoDB escanea todos los documentos. **Con un índice**:
+
+```javascript
+db.users.createIndex({ age: 1 })
+db.users.find({ age: 30 })
+```
+Solo examina los documentos relevantes, reduciendo el tiempo de ejecución de segundos a milisegundos.
+
+### 📌 Paso 1: Crear el script de seeding
+  - Ejecuta el script de seeding `index_seed.js`: para poblar la base de datos con datos de prueba.
+
+```bash
+  node index_seed.js
+```
+
+
 ### 📌 Tipos de índices
-1. **Índice único:** Evita duplicados en un campo.
+
+1. **Índice simple (Single Field):**
+   - Optimiza consultas en un solo campo.
+   - Puede ordenarse ascendente (`1`) o descendente (`-1`).
+   ```javascript
+   db.customers.createIndex({ age: 1 })
+   ```
+   Útil para: Consultas como `db.customers.find({ age: 25 })`.
+
+2. **Índice único:** Evita duplicados en un campo.
+   - Asegura que no haya duplicados en un campo (o combinación de campos).
+   - Ideal para campos como emails o identificadores.
    ```javascript
    db.customers.createIndex({ email: 1 }, { unique: true })
    ```
-2. **Índice compuesto:** Optimiza consultas con múltiples campos.
+   - Si intentas insertar un documento con un email duplicado, MongoDB lanza un error.
+
+3. **Índice compuesto:** Optimiza consultas con múltiples campos.
+   - Combina múltiples campos en un solo índice para optimizar consultas complejas.
+   - El orden de los campos importa: prioriza los campos más usados en filtros.
    ```javascript
    db.orders.createIndex({ customerId: 1, orderDate: -1 })
    ```
-3. **Índice de texto:** Permite búsquedas textuales.
+4. **Índice de texto:** Permite búsquedas textuales.
+  - Permite búsquedas full-text en campos de tipo string.
+  - Solo se permite un índice de texto por colección.
+
    ```javascript
    db.products.createIndex({ description: "text" })
    ```
-4. **Índice geoespacial:** Para consultas basadas en ubicación.
+
+5. **Índice geoespacial:** Para consultas basadas en ubicación.
+  - Optimiza consultas basadas en coordenadas o ubicaciones (2D o esféricas).
+
    ```javascript
    db.stores.createIndex({ location: "2dsphere" })
    ```
+   Ejemplo: Encuentra tiendas cercanas a un punto:
 
-### 📖 Sharding
-**Sharding** es una técnica para distribuir datos entre múltiples servidores (fragmentos o *shards*), mejorando la escalabilidad horizontal. Ideal para grandes volúmenes de datos o tráfico intenso.
+   ```json
+    db.stores.find({
+      location: {
+        $near: {
+          $geometry: { type: "Point", coordinates: [-73.935242, 40.730610] },
+          $maxDistance: 5000 // metros
+        }
+      }
+    })
+   ```
 
-**Ejemplo:** Una colección `users` con millones de registros se divide en fragmentos por `country`. Cada servidor maneja un subconjunto, reduciendo la carga.
+6. **Índice TTL (Time-To-Live):** Elimina documentos automáticamente después de un tiempo   especificado.
+   - Perfecto para datos temporales como sesiones o logs.
 
-**Nota:** Configurar sharding requiere múltiples instancias de MongoDB, lo que va más allá de nuestro contenedor único actual. Lo mencionamos como concepto clave para entornos reales.
+   ```javascript
+    db.sessions.createIndex({ createdAt: 1 }, { expireAfterSeconds: 3600 })
+   ```
+   Los documentos con createdAt mayor a 1 hora serán eliminados.
 
-### 📖 Replica Set
-Un **Replica Set** es un grupo de nodos MongoDB que replican datos para alta disponibilidad. Incluye un nodo primario (escritura) y secundarios (lectura). Si el primario falla, un secundario toma su lugar.
 
-**Ejemplo básico en `mongosh`:**
-```javascript
-rs.initiate()
-rs.status()
-```
-**Nota:** Similar a sharding, requiere múltiples contenedores, pero lo exploraremos teóricamente por ahora.
 
 ### 📌 Ventajas de los índices
 - Aceleran consultas de búsqueda, filtrado y ordenamiento.
@@ -237,25 +314,6 @@ db.products.aggregate([
 
 ---
 
-#### 6. Reflexiona sobre sharding y replicación
-Supón que `shop_db` crece a millones de documentos. Responde teóricamente:
-- ¿Cómo usarías sharding para dividir `products`?
-- ¿Cómo configurarías un Replica Set para alta disponibilidad?
-
-<details>
-<summary>Ver solución</summary>
-
-- **Sharding:** Dividiría `products` por `category` (clave de fragmentación o *shard key*). Cada shard contendría categorías específicas (e.g., "Electronics" en un servidor, "Clothing" en otro).
-- **Replica Set:** Configuraría 3 nodos: un primario y dos secundarios. Usaría `rs.initiate()` para activar la replicación y `rs.status()` para monitorear.
-
-</details>
-
----
-
-### Resultado Esperado
-- `products` tiene 10 documentos (5 del Día 3 + 5 nuevos).
-- Un índice compuesto optimiza consultas en `category` y `price`.
-- Puedes analizar rendimiento y aggregations con herramientas prácticas.
 
 ---
 

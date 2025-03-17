@@ -16,7 +16,7 @@ async function seedDB() {
     const categories = ["Electronics", "Clothing", "Books", "Toys", "Sports", "Home"];
     
     // Generar 50,000 productos
-    for (let i = 0; i < 50000; i++) {
+    for (let i = 0; i < 500000; i++) {
       products.push({
         name: faker.commerce.productName(),
         price: parseFloat(faker.commerce.price({ min: 10, max: 1000 })),
