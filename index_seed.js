@@ -34,7 +34,7 @@ async function seedDB() {
     console.log("Colecciones limpiadas");
 
     // Insertar productos
-    const productData = Array.from({ length: 20 }).map(() => ({
+    const productData = Array.from({ length: 500000 }).map(() => ({
       name: faker.commerce.productName(),
       price: parseFloat(faker.commerce.price()),
       category: faker.commerce.department(),
@@ -44,7 +44,7 @@ async function seedDB() {
     console.log("Productos insertados");
 
     // Insertar clientes
-    const customerData = Array.from({ length: 15 }).map(() => ({
+    const customerData = Array.from({ length: 100000 }).map(() => ({
       firstName: faker.person.firstName(),
       lastName: faker.person.lastName(),
       email: faker.internet.email(),
@@ -54,7 +54,7 @@ async function seedDB() {
     console.log("Clientes insertados");
 
     // Insertar órdenes
-    const orderData = Array.from({ length: 30 }).map(() => ({
+    const orderData = Array.from({ length: 1000000 }).map(() => ({
       customerId: faker.helpers.arrayElement(customerData)._id,
       productId: faker.helpers.arrayElement(productData)._id,
       quantity: faker.number.int({ min: 1, max: 5 }),

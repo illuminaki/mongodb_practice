@@ -84,7 +84,7 @@ Solo examina los documentos relevantes, reduciendo el tiempo de ejecución de se
    - Combina múltiples campos en un solo índice para optimizar consultas complejas.
    - El orden de los campos importa: prioriza los campos más usados en filtros.
    ```javascript
-   db.orders.createIndex({ customerId: 1, orderDate: -1 })
+   db.orders.createIndex({ customerId: 1, date: -1 })
    ```
 4. **Índice de texto:** Permite búsquedas textuales.
   - Permite búsquedas full-text en campos de tipo string.
