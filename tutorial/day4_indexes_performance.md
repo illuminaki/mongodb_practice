@@ -72,6 +72,8 @@ Solo examina los documentos relevantes, reduciendo el tiempo de ejecución de se
    ```
    Útil para: Consultas como `db.customers.find({ age: 25 })`.
 
+   para medir el resultado podemos usar `db.customers.find({ age: 25 }).explain("executionStats")`
+
 2. **Índice único:** Evita duplicados en un campo.
    - Asegura que no haya duplicados en un campo (o combinación de campos).
    - Ideal para campos como emails o identificadores.
